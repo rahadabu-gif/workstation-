@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workstation OS — Personal Focus & Discipline</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for 7-Day Improvement Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Inter & Hind Siliguri for Bangla -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Hind Siliguri', sans-serif;
+            background-color: #09090b;
+            color: #fafafa;
+        }
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .font-bangla {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+        }
+        .surface-card {
+            background: rgba(24, 24, 27, 0.85);
+            border: 1px solid rgba(63, 63, 70, 0.55);
+            backdrop-filter: blur(12px);
+        }
+        .surface-subtle {
+            background: rgba(39, 39, 42, 0.45);
+            border: 1px solid rgba(63, 63, 70, 0.4);
+        }
+        @keyframes pulseDanger {
+            0%, 100% { background-color: rgba(127, 29, 29, 0.96); }
+            50% { background-color: rgba(185, 28, 28, 0.98); }
+        }
+        .breach-siren {
+            animation: pulseDanger 1.2s infinite;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-indigo-500 selection:text-white pb-20 md:pb-10">
+
+    <!-- ==================== 1. PRIVATE ACCOUNT LOGIN / SIGNUP OVERLAY ==================== -->
+    <div id="authScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/95 backdrop-blur-md">
+        <div class="max-w-md w-full surface-card rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="flex items-center justify-between gap-3 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white text-zinc-950 flex items-center justify-center font-bold shadow-sm">
+                        <i data-lucide="command" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight text-white">Workstation OS</h1>
+                        <p class="text-xs text-zinc-400">Personal Focus &amp; Discipline Workspace</p>
+                    </div>
+                </div>
+                <button id="btnAuthScreenDownload" type="button" class="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Download App</span>
+                </button>
+            </div>
+
+            <!-- Login / Create Tabs -->
+            <div class="grid grid-cols-2 gap-1 p-1 rounded-xl bg-zinc-900 border border-zinc-800 mb-5">
+                <button id="tabBtnLogin" type="button" class="py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-white transition">
+                    Login Account
+                </button>
+                <button id="tabBtnRegister" type="button" class="py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white transition">
+                    Create New Account
+                </button>
+            </div>
+
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1.5">Username (ইউজারনেম)</label>
+                    <input id="authUsername" type="text" required placeholder="e.g., rahad"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500" />
+                </div>
+
+                <div id="displayNameGroup" class="hidden">
+                    <label class="block text-xs font-medium text-zinc-300 mb-1.5">Your Full Name (আপনার নাম)</label>
+                    <input id="authDisplayName" type="text" placeholder="e.g., Rahad"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1.5">4-Digit PIN (পিন কোড)</label>
+                    <input id="authPin" type="password" inputmode="numeric" maxlength="8" required placeholder="••••"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 font-mono-code tracking-widest" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-300 mb-1.5">Default Voice Language (কণ্ঠের ভাষা)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="authLangBn" class="py-2.5 px-3 rounded-xl border border-indigo-500/60 bg-indigo-500/15 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                            <span>🇧🇩 বাংলা পুরুষ কণ্ঠ</span>
+                        </button>
+                        <button type="button" id="authLangEn" class="py-2.5 px-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                            <span>🇬🇧 English Male</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/80 border border-zinc-800">
+                    <div>
+                        <p class="text-xs font-medium text-zinc-200">Auto-Remember Me &amp; Save Data</p>
+                        <p class="text-[11px] text-zinc-400 font-bangla">আপনার সব ডাটা অটোমেটিক সেভ থাকবে</p>
+                    </div>
+                    <input id="authRememberMe" type="checkbox" checked class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" />
+                </div>
+
+                <div id="authErrorMsg" class="hidden text-xs text-rose-400 bg-rose-950/40 border border-rose-800/50 rounded-xl p-3"></div>
+
+                <button id="btnSubmitAuth" type="submit" class="w-full py-3 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-sm flex items-center justify-center gap-2 transition shadow-sm">
+                    <span id="authSubmitLabel">Open My Workspace</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+
+            <div class="mt-5 pt-5 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-400">
+                <button id="btnAuthRestoreBackup" type="button" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Restore Backup (.json)</span>
+                </button>
+                <button id="btnQuickGuest" type="button" class="text-indigo-400 hover:text-indigo-300 font-medium underline underline-offset-4">
+                    Instant Demo Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. FOCUS BREACH ALARM OVERLAY ==================== -->
+    <div id="breachOverlay" class="fixed inset-0 z-50 hidden flex-col items-center justify-center p-6 text-center breach-siren backdrop-blur-xl">
+        <div class="max-w-lg w-full bg-zinc-950/90 border border-rose-500/60 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                <i data-lucide="shield-alert" class="w-8 h-8"></i>
+            </div>
+            <span class="px-3 py-1 text-[11px] font-mono-code uppercase tracking-widest bg-rose-500/20 text-rose-300 rounded-full border border-rose-500/30">
+                Distraction Blocked • মনোযোগ ভঙ্গ হয়েছে
+            </span>
+            <h2 id="breachTitleText" class="mt-4 text-xl sm:text-2xl font-bold text-white font-bangla">
+                সতর্কবার্তা! ফোন রেখে কাজে ফিরে যান!
+            </h2>
+            <p id="breachSubText" class="mt-2 text-sm text-rose-200/90">
+                You switched away during an active Force-Focus session. This distraction has been recorded.
+            </p>
+            <div class="mt-5 p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 text-left">
+                <p class="text-[11px] uppercase tracking-wider text-zinc-400">Your Locked #1 Plan:</p>
+                <p id="breachMissionReminder" class="text-sm font-semibold text-indigo-300 mt-0.5 font-bangla">
+                    Complete Deep Work Session
+                </p>
+            </div>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                <button id="btnRepeatBreachVoice" type="button" class="flex-1 py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs flex items-center justify-center gap-2 transition">
+                    <i data-lucide="volume-2" class="w-4 h-4 text-indigo-400"></i>
+                    <span>Speak Warning Again</span>
+                </button>
+                <button id="btnReturnToWork" type="button" class="flex-1 py-3 px-4 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs flex items-center justify-center gap-2 transition">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>I Am Back to Work</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 3. EASY DOWNLOAD & BACKUP MODAL ==================== -->
+    <div id="infoModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-zinc-950/85 backdrop-blur-sm">
+        <div class="max-w-xl w-full surface-card rounded-2xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-zinc-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Easy Download &amp; Data Backup Center</h3>
+                        <p class="text-[11px] text-zinc-400 font-bangla">অ্যাপ ডাউনলোড এবং আপনার সব ডাটা ব্যাকআপ রাখুন</p>
+                    </div>
+                </div>
+                <button id="btnCloseInfoModal" class="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="mt-5 space-y-4 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                <!-- 1. Standalone Offline HTML File -->
+                <div class="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/30">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono-code uppercase bg-emerald-500/20 text-emerald-300 rounded-full">100% Free &amp; Offline</span>
+                            <h4 class="font-bold text-white mt-1.5">1. Download Standalone App File (.html)</h4>
+                            <p class="text-xs text-zinc-400 mt-0.5 font-bangla">
+                                এক ক্লিকে সম্পূর্ণ অ্যাপটি আপনার ফোন বা কম্পিউটারে ডাউনলোড করুন। এটি ইন্টারনেট ছাড়াই চলবে এবং বন্ধুদের শেয়ার করতে পারবেন।
+                            </p>
+                        </div>
+                        <button id="btnDownloadStandaloneHtml" type="button" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs shrink-0 flex items-center justify-center gap-2 transition shadow-lg">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download App (.html)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Add to Phone Home Screen -->
+                <div class="p-4 rounded-xl surface-subtle">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h4 class="font-bold text-white">2. Install as Phone App Icon</h4>
+                            <p class="text-xs text-zinc-400 mt-0.5 font-bangla">
+                                আপনার ফোনের ব্রাউজারের মেনু (⋮) থেকে <strong>"Add to Home screen"</strong> চাপলে এটি আসল অ্যাপের মতো হোম স্ক্রিনে বসে যাবে।
+                            </p>
+                        </div>
+                        <button id="btnTriggerPwaInstall" type="button" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center justify-center gap-1.5 transition">
+                            <i data-lucide="smartphone" class="w-4 h-4"></i>
+                            <span>Install to Phone</span>
+                        </button>
+                    </div>
+                    <div id="pwaInstallHint" class="hidden mt-3 p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-amber-300 font-bangla">
+                        📲 আপনার ব্রাউজারের উপরের ডান কোণায় <strong>⋮ (৩ ডট মেনু)</strong> চাপুন এবং <strong>"Add to Home screen"</strong> সিলেক্ট করুন!
+                    </div>
+                </div>
+
+                <!-- 3. Export / Import User Data JSON -->
+                <div class="p-4 rounded-xl surface-subtle">
+                    <h4 class="font-bold text-white">3. Save or Restore Your Personal Data (.json)</h4>
+                    <p class="text-xs text-zinc-400 mt-0.5 font-bangla">
+                        আপনার সব কাজ অটোমেটিক সেভ হচ্ছে। এছাড়াও নিচের বাটনে ক্লিক করে আপনার ডাটা ফাইল ডাউনলোড বা রিস্টোর করতে পারবেন।
+                    </p>
+                    <div class="mt-3 flex flex-wrap gap-2.5">
+                        <button id="btnExportDataJson" type="button" class="flex-1 py-2.5 px-3.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-zinc-700 transition">
+                            <i data-lucide="hard-drive-download" class="w-4 h-4 text-emerald-400"></i>
+                            <span>Download My Data (.json)</span>
+                        </button>
+                        <button id="btnTriggerImportJson" type="button" class="flex-1 py-2.5 px-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 font-semibold text-xs flex items-center justify-center gap-2 border border-zinc-800 transition">
+                            <i data-lucide="upload" class="w-4 h-4 text-indigo-400"></i>
+                            <span>Restore Backup (.json)</span>
+                        </button>
+                        <input id="inputImportJsonFile" type="file" accept=".json,application/json" class="hidden" />
+                    </div>
+                </div>
+
+                <!-- 4. Android App Pinning Guide -->
+                <div class="p-4 rounded-xl surface-subtle">
+                    <h4 class="font-semibold text-rose-400 mb-1">4. Physically Block Facebook (Android App Pinning)</h4>
+                    <ol class="list-decimal list-inside space-y-1 text-zinc-400 text-xs">
+                        <li>Open phone <strong>Settings → Security → App Pinning</strong> and turn it <strong>ON</strong>.</li>
+                        <li>Open Workstation OS, swipe up to Recent Apps, tap the top icon and select <strong>Pin</strong>.</li>
+                        <li>Your phone is now physically locked inside Workstation OS until you enter your lock-screen PIN.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button id="btnGotItModal" class="px-5 py-2 rounded-xl bg-white text-zinc-950 font-semibold text-xs hover:bg-zinc-200 transition">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. TOP NAVIGATION BAR ==================== -->
+    <header class="sticky top-0 z-30 bg-zinc-950/85 backdrop-blur-md border-b border-zinc-800/80">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+            <!-- Brand & Auto-Save Badge -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-white text-zinc-950 flex items-center justify-center font-bold shrink-0">
+                    <i data-lucide="command" class="w-4 h-4"></i>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-bold text-sm sm:text-base tracking-tight text-white">Workstation</span>
+                    <span id="saveStatusBadge" class="px-2 py-0.5 text-[10px] font-mono-code font-medium rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span id="saveStatusText">Saved ✓</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Desktop 3-Tab Switcher -->
+            <nav class="hidden md:flex items-center gap-1 p-1 rounded-xl bg-zinc-900 border border-zinc-800/90">
+                <button data-tab="workspace" class="nav-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 text-white transition flex items-center gap-1.5">
+                    <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                    <span>Workspace</span>
+                </button>
+                <button data-tab="voice" class="nav-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                    <span>Voice &amp; Lock (বাংলা)</span>
+                </button>
+                <button data-tab="analytics" class="nav-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
+                    <span>Analytics</span>
+                </button>
+            </nav>
+
+            <!-- Actions: Motivate, Download, Account -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button id="btnQuickVoiceMotivate" title="Motivate Me Now" class="px-2.5 py-1.5 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/30 text-xs font-medium flex items-center gap-1.5 transition">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span class="hidden lg:inline font-bangla">অনুপ্রেরণা</span>
+                </button>
+
+                <button id="btnOpenInfoModal" title="Download App & Backup Data" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs flex items-center gap-1.5 transition shadow-sm">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Download</span>
+                </button>
+
+                <div class="flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-xl bg-zinc-900 border border-zinc-800">
+                    <div id="userAvatarInitial" class="w-6 h-6 rounded-lg bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center uppercase">
+                        U
+                    </div>
+                    <span id="headerUserName" class="text-xs font-medium text-zinc-200 max-w-[75px] truncate hidden sm:inline">User</span>
+                    <button id="btnLogout" title="Switch Account / Log Out" class="p-1 text-zinc-400 hover:text-rose-400 rounded-md hover:bg-zinc-800 transition">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800 px-3 py-2 flex items-center justify-around">
+        <button data-tab="workspace" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-4 rounded-xl text-white font-semibold text-[11px]">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            <span>Workspace</span>
+        </button>
+        <button data-tab="voice" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-4 rounded-xl text-zinc-400 font-semibold text-[11px]">
+            <i data-lucide="volume-2" class="w-4 h-4"></i>
+            <span>Voice (বাংলা)</span>
+        </button>
+        <button data-tab="analytics" class="nav-tab-btn flex flex-col items-center gap-1 py-1 px-4 rounded-xl text-zinc-400 font-semibold text-[11px]">
+            <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+            <span>Analytics</span>
+        </button>
+    </nav>
+
+    <!-- ==================== 5. MAIN CONTAINER ==================== -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+
+        <!-- Daily Motivation Banner -->
+        <section class="surface-card rounded-2xl p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+                    <i data-lucide="flame" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] font-mono-code uppercase tracking-wider text-indigo-400">Daily Mindset</span>
+                        <span class="text-zinc-600">•</span>
+                        <span id="currentDateDisplay" class="text-[11px] text-zinc-400">Today</span>
+                    </div>
+                    <p id="quoteBannerText" class="text-xs sm:text-sm font-medium text-zinc-100 mt-0.5 font-bangla">
+                        “শৃঙ্খলা হলো আপনি এখন কী চান এবং আপনার জীবনের মূল লক্ষ্য কী—তার মধ্যে সঠিকটি বেছে নেওয়া।”
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button id="btnNextQuote" type="button" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs text-zinc-300 transition">
+                    Next Quote
+                </button>
+                <button id="btnBannerSpeakMotivation" type="button" class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs flex items-center gap-1.5 transition">
+                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                    <span>Speak Motivation</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Quick KPI Summary Strip -->
+        <section class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="surface-card rounded-2xl p-4">
+                <span class="text-[11px] text-zinc-400">Daily Progress</span>
+                <div class="mt-1 flex items-baseline justify-between">
+                    <span id="kpiScore" class="text-xl sm:text-2xl font-bold font-mono-code text-white">0%</span>
+                    <span id="kpiTasksCount" class="text-xs text-emerald-400 font-mono-code">0/4</span>
+                </div>
+                <div class="mt-2.5 w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                    <div id="kpiProgressBar" class="h-full bg-emerald-400 transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="surface-card rounded-2xl p-4">
+                <span class="text-[11px] text-zinc-400">Focused Minutes</span>
+                <div class="mt-1 flex items-baseline justify-between">
+                    <span id="kpiFocusMins" class="text-xl sm:text-2xl font-bold font-mono-code text-white">0m</span>
+                    <span class="text-[11px] text-indigo-400">Deep Work</span>
+                </div>
+                <p class="mt-2 text-[11px] text-zinc-500">Target: 120m / day</p>
+            </div>
+
+            <div class="surface-card rounded-2xl p-4">
+                <span class="text-[11px] text-zinc-400">Distractions Blocked</span>
+                <div class="mt-1 flex items-baseline justify-between">
+                    <span id="kpiBreaches" class="text-xl sm:text-2xl font-bold font-mono-code text-rose-400">0</span>
+                    <button id="btnSimulateBreach" type="button" class="text-[11px] text-rose-300 underline hover:text-rose-200">Test Alarm</button>
+                </div>
+                <p class="mt-2 text-[11px] text-zinc-500">Goal: 0 breaches</p>
+            </div>
+
+            <div class="surface-card rounded-2xl p-4">
+                <span class="text-[11px] text-zinc-400">Active Streak</span>
+                <div class="mt-1 flex items-baseline justify-between">
+                    <span id="kpiStreak" class="text-xl sm:text-2xl font-bold font-mono-code text-amber-400">1 Day</span>
+                    <span class="text-[11px] text-amber-300">🔥 Consistent</span>
+                </div>
+                <p class="mt-2 text-[11px] text-zinc-500">Private to your account</p>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 1: WORKSPACE (TIMER, PLAN & CHECKLIST) ==================== -->
+        <div id="viewWorkspace" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left 5 Cols: Deep Work Timer & Force-Focus Lock -->
+            <div class="lg:col-span-5 surface-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Deep Work Lockdown</h2>
+                            <p class="text-xs text-zinc-400">Triggers voice alarm if you leave the app</p>
+                        </div>
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <span class="text-xs text-zinc-300 font-medium">Force Mode</span>
+                            <input id="toggleForceMode" type="checkbox" checked class="sr-only peer" />
+                            <div class="w-9 h-5 bg-zinc-800 peer-checked:bg-rose-500 rounded-full relative transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-all peer-checked:after:translate-x-4"></div>
+                        </label>
+                    </div>
+
+                    <!-- Digital Timer Display -->
+                    <div class="my-4 py-8 rounded-2xl bg-zinc-950/90 border border-zinc-800/90 text-center">
+                        <span id="timerStatusBadge" class="px-2.5 py-0.5 text-[10px] font-mono-code uppercase tracking-widest rounded-full bg-zinc-800 text-zinc-300">
+                            Ready to Focus
+                        </span>
+                        <div id="timerDisplay" class="mt-3 text-5xl sm:text-6xl font-bold font-mono-code tracking-tight text-white">
+                            25:00
+                        </div>
+                        <p id="timerSubHint" class="mt-2 text-xs text-zinc-400 font-bangla">
+                            টাইমার চলাকালীন অন্য অ্যাপে গেলে সতর্কবার্তা বাজবে
+                        </p>
+                    </div>
+
+                    <!-- Duration Pills -->
+                    <div class="grid grid-cols-4 gap-2 mb-4">
+                        <button data-mins="25" class="preset-time-btn py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-mono-code text-zinc-200 transition">
+                            25m
+                        </button>
+                        <button data-mins="50" class="preset-time-btn py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-mono-code text-zinc-200 transition">
+                            50m
+                        </button>
+                        <button data-mins="90" class="preset-time-btn py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-mono-code text-zinc-200 transition">
+                            90m
+                        </button>
+                        <input id="inputCustomMins" type="number" min="1" max="300" placeholder="Custom"
+                            class="w-full py-2 px-2 rounded-xl bg-zinc-950 border border-zinc-800 text-center text-xs font-mono-code text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500" />
+                    </div>
+                </div>
+
+                <!-- Start / Reset Controls -->
+                <div class="flex gap-2.5 pt-2">
+                    <button id="btnStartTimer" type="button" class="flex-1 py-3 px-4 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-sm">
+                        <i data-lucide="play" class="w-4 h-4"></i>
+                        <span id="startTimerLabel">Start Focus Session</span>
+                    </button>
+                    <button id="btnResetTimer" type="button" class="py-3 px-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs transition" title="Reset Timer">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right 7 Cols: Today's #1 Plan & Daily Activities Checklist -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Today's #1 Plan Setter -->
+                <div class="surface-card rounded-2xl p-5 sm:p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="target" class="w-4 h-4 text-indigo-400"></i>
+                            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Today's #1 Non-Negotiable Plan</h2>
+                        </div>
+                        <span id="planLockStatus" class="text-[11px] font-mono-code text-zinc-400">Editable</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2.5">
+                        <input id="inputDailyMission" type="text" placeholder="আজকের প্রধান কাজ লিখুন (e.g. Complete 3 Chapters & Practice)"
+                            class="flex-1 px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 font-bangla" />
+                        <button id="btnLockMission" type="button" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shrink-0 flex items-center justify-center gap-1.5 transition">
+                            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                            <span id="lockMissionLabel">Lock Plan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Daily Activity Checklist -->
+                <div class="surface-card rounded-2xl p-5 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Daily Activities Checklist</h2>
+                            <p class="text-xs text-zinc-400">Check off tasks to build your daily improvement curve</p>
+                        </div>
+                        <span id="checklistFraction" class="text-xs font-mono-code text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
+                            0 / 4 Done
+                        </span>
+                    </div>
+
+                    <!-- Task List Container -->
+                    <div id="taskListContainer" class="space-y-2 mb-4"></div>
+
+                    <!-- Add New Activity Form -->
+                    <form id="formAddTask" class="flex gap-2">
+                        <input id="inputNewTask" type="text" placeholder="নতুন কাজ যোগ করুন (Add a new daily activity)..."
+                            class="flex-1 px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 font-bangla" />
+                        <button type="submit" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs shrink-0 flex items-center gap-1.5 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Add</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: VOICE & LOCK STUDIO (বাংলা পুরুষ কণ্ঠ) ==================== -->
+        <div id="viewVoice" class="hidden space-y-6">
+            <div class="surface-card rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-zinc-800">
+                    <div>
+                        <span class="px-2.5 py-0.5 text-[10px] font-mono-code uppercase bg-indigo-500/20 text-indigo-300 rounded-full">
+                            Bangla &amp; English Male TTS Engine
+                        </span>
+                        <h2 class="text-base sm:text-lg font-bold text-white mt-1.5">
+                            Custom Voice &amp; Text Notification Studio (বাংলা পুরুষ কণ্ঠ)
+                        </h2>
+                        <p class="text-xs text-zinc-400 font-bangla">
+                            কাজের সময় অন্য অ্যাপে গেলে বা মোটিভেশন চাইলে আপনার ফোন কী বলবে তা এখানে সেট করুন।
+                        </p>
+                    </div>
+                    <button id="btnPreviewVoiceAlert" type="button" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center gap-2 shrink-0 transition">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i>
+                        <span>Test Warning Voice</span>
+                    </button>
+                </div>
+
+                <!-- Quick Language & Preset Selector -->
+                <div class="mt-5">
+                    <label class="block text-xs font-medium text-zinc-300 mb-2">1. Choose Voice Profile &amp; Preset Script:</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <button type="button" data-preset="bn_strict" class="voice-preset-btn p-3.5 rounded-xl border border-indigo-500 bg-indigo-500/10 text-left transition">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-white font-bangla">🇧🇩 বাংলা কড়া শাসন (Male)</span>
+                                <span class="text-[10px] font-mono-code text-indigo-300">Bangla</span>
+                            </div>
+                            <p class="text-[11px] text-zinc-400 mt-1 font-bangla">“সতর্কবার্তা! ফেসবুক বন্ধ করুন এবং এখনই কাজে ফিরে যান!”</p>
+                        </button>
+
+                        <button type="button" data-preset="bn_calm" class="voice-preset-btn p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/70 hover:border-zinc-700 text-left transition">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-white font-bangla">🇧🇩 বাংলা অনুপ্রেরণা (Male)</span>
+                                <span class="text-[10px] font-mono-code text-emerald-300">Bangla</span>
+                            </div>
+                            <p class="text-[11px] text-zinc-400 mt-1 font-bangla">“ভাই, নিজের স্বপ্নের কথা ভাবুন। ফোন রেখে মনোযোগ দিন।”</p>
+                        </button>
+
+                        <button type="button" data-preset="en_strict" class="voice-preset-btn p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/70 hover:border-zinc-700 text-left transition">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-white">🇬🇧 English Commander (Male)</span>
+                                <span class="text-[10px] font-mono-code text-amber-300">English</span>
+                            </div>
+                            <p class="text-[11px] text-zinc-400 mt-1">“Stop scrolling! Put the phone down and execute your plan.”</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Text & Voice Inputs -->
+                <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-300 mb-1.5">
+                            Custom Distraction Warning (অন্য অ্যাপে গেলে যা বলবে):
+                        </label>
+                        <textarea id="inputVoiceWarning" rows="3"
+                            class="w-full p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white focus:outline-none focus:border-indigo-500 font-bangla"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-300 mb-1.5">
+                            Custom Motivation Pep-Talk (অনুপ্রেরণা বাটনে চাপলে যা বলবে):
+                        </label>
+                        <textarea id="inputVoiceMotivation" rows="3"
+                            class="w-full p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs sm:text-sm text-white focus:outline-none focus:border-indigo-500 font-bangla"></textarea>
+                    </div>
+                </div>
+
+                <!-- Male Pitch & Speed Sliders -->
+                <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-zinc-800/80">
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">
+                            Male Voice Depth (Pitch): <span id="labelPitchVal" class="font-mono-code text-indigo-400">0.80</span>
+                        </label>
+                        <input id="sliderVoicePitch" type="range" min="0.60" max="1.15" step="0.02" value="0.80" class="w-full accent-indigo-500 cursor-pointer" />
+                        <span class="text-[10px] text-zinc-500">Default 0.80 = Deep Male Tone (পুরুষালি গম্ভীর কণ্ঠ)</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">
+                            Speaking Speed: <span id="labelRateVal" class="font-mono-code text-indigo-400">0.95x</span>
+                        </label>
+                        <input id="sliderVoiceSpeed" type="range" min="0.75" max="1.25" step="0.05" value="0.95" class="w-full accent-indigo-500 cursor-pointer" />
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">Detected Device Voice:</label>
+                        <select id="selectSystemVoice" class="w-full rounded-xl bg-zinc-950 border border-zinc-800 px-3 py-2 text-xs text-zinc-200 focus:outline-none">
+                            <option value="">Auto-Match Bangla / English Male Voice</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex flex-wrap items-center justify-between gap-2">
+                    <button id="btnTestMotivationVoiceStudio" type="button" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-xs flex items-center gap-2 transition">
+                        <i data-lucide="play" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        <span>Test Motivation Voice</span>
+                    </button>
+                    <button id="btnSaveVoiceConfig" type="button" class="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs sm:text-sm transition">
+                        Save Voice Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: 7-DAY ANALYTICS & IMPROVEMENT ==================== -->
+        <div id="viewAnalytics" class="hidden space-y-6">
+            <div class="surface-card rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white">7-Day Performance &amp; Improvement Graph</h2>
+                        <p class="text-xs text-zinc-400">
+                            Private analytics for <strong id="analyticsUserLabel" class="text-white">your account</strong> (Auto-Saved).
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="btnAnalyticsBackup" type="button" class="px-3.5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-xs flex items-center gap-1.5 transition">
+                            <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>Backup Data (.json)</span>
+                        </button>
+                        <button id="btnCompleteDay" type="button" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-xs flex items-center gap-1.5 transition">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>Archive Today &amp; Next Day</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="h-64 sm:h-72 w-full">
+                    <canvas id="analyticsChartCanvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Distraction Log History -->
+            <div class="surface-card rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Recent Distraction Interceptions</h3>
+                    <button id="btnClearBreachLogs" type="button" class="text-xs text-zinc-400 hover:text-white">Clear Log</button>
+                </div>
+                <div id="breachLogList" class="space-y-2 text-xs text-zinc-400"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-16 md:bottom-6 right-6 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-xs font-medium shadow-2xl">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="toastText">Saved</span>
+    </div>
+
+    <!-- ==================== APPLICATION LOGIC ==================== -->
+    <script>
+        // --- 1. VOICE & MOTIVATION PRESETS (BANGLA & ENGLISH) ---
+        const PRESETS = {
+            bn_strict: {
+                lang: 'bn',
+                warning: "সতর্কবার্তা! আপনি এখন ফোকাস সেশনে আছেন। ফেসবুক বা অন্য অ্যাপ বন্ধ করুন এবং এখনই নিজের কাজে ফিরে যান!",
+                motivation: "আপনার ভবিষ্যৎ নির্ভর করছে আপনি আজকের সময়টা কীভাবে ব্যবহার করছেন তার ওপর। অজুহাত বাদ দিন, মনোযোগ দিয়ে কাজ শেষ করুন!"
+            },
+            bn_calm: {
+                lang: 'bn',
+                warning: "ভাই, নিজের লক্ষ্যের কথা মনে করুন। ফোন রেখে আপনার আজকের প্রধান কাজটি সম্পন্ন করুন।",
+                motivation: "প্রতিদিনের ছোট ছোট প্রচেষ্টাই আপনাকে চূড়ান্ত সাফল্যের দিকে নিয়ে যাবে। শান্ত থাকুন এবং মনোযোগ ধরে রাখুন।"
+            },
+            en_strict: {
+                lang: 'en',
+                warning: "Warning! Distraction detected. Close social media immediately and return to your workstation plan!",
+                motivation: "Discipline is choosing between what you want now and what you want most. Stay locked in and finish your mission."
+            }
+        };
+
+        const QUOTES = [
+            "“শৃঙ্খলা হলো আপনি এখন কী চান এবং আপনার জীবনের মূল লক্ষ্য কী—তার মধ্যে সঠিকটি বেছে নেওয়া।”",
+            "“প্রতিদিনের ১% উন্নতি আপনাকে এক বছরে ৩৭ গুণ সেরা করে তুলবে।”",
+            "“Don’t count the days, make the days count. Lock in on your #1 mission today.”",
+            "“ফোন এবং সোশ্যাল মিডিয়া আপনার মনোযোগ চুরি করার জন্য তৈরি; নিজের সময়ের নিয়ন্ত্রণ নিজের হাতে নিন।”"
+        ];
+
+        // --- 2. DEFAULT USER TEMPLATE ---
+        function createDefaultUserData(username, displayName, pin, voiceLang = 'bn') {
+            const preset = voiceLang === 'bn' ? PRESETS.bn_strict : PRESETS.en_strict;
+            return {
+                username: username.toLowerCase().trim(),
+                displayName: displayName || username,
+                pin: pin,
+                voiceLang: voiceLang,
+                voicePitch: 0.80,
+                voiceSpeed: 0.95,
+                selectedVoiceURI: "",
+                voiceWarning: preset.warning,
+                voiceMotivation: preset.motivation,
+                forceMode: true,
+                streak: 1,
+                focusMinutesToday: 0,
+                breachesToday: 0,
+                dailyMission: voiceLang === 'bn' ? "আজকের মূল পড়াশোনা ও ডিপ ওয়ার্ক সম্পন্ন করা" : "Complete 2 Deep Work Focus Blocks",
+                missionLocked: false,
+                tasks: [
+                    { id: 1, text: "Deep Focus Block 1 (৫০ মিনিট মনোযোগ দিয়ে কাজ)", done: false },
+                    { id: 2, text: "Deep Focus Block 2 (৫০ মিনিট রিভিশন ও প্র্যাকটিস)", done: false },
+                    { id: 3, text: "কাজের সময় ফেসবুক ও সোশ্যাল মিডিয়া থেকে দূরে থাকা", done: true },
+                    { id: 4, text: "শারীরিক ব্যায়াম ও বিশ্রাম (Health Routine)", done: false }
+                ],
+                breachLogs: [],
+                history7Days: [
+                    { day: "Day 1", score: 60, mins: 45, breaches: 2 },
+                    { day: "Day 2", score: 70, mins: 60, breaches: 1 },
+                    { day: "Day 3", score: 75, mins: 75, breaches: 1 },
+                    { day: "Day 4", score: 85, mins: 90, breaches: 0 },
+                    { day: "Today", score: 25, mins: 0, breaches: 0 }
+                ]
+            };
+        }
+
+        // --- 3. OFFLINE STORAGE ENGINE (INDEXEDDB + LOCALSTORAGE FALLBACK) ---
+        let currentUser = null;
+        let authMode = 'login';
+        let selectedAuthLang = 'bn';
+        let deferredInstallPrompt = null;
+
+        const OfflineDB = {
+            dbName: 'WorkstationOS_OfflineVault',
+            storeName: 'keyval',
+            open() {
+                return new Promise((resolve) => {
+                    if (!('indexedDB' in window)) return resolve(null);
+                    try {
+                        const req = indexedDB.open(this.dbName, 1);
+                        req.onupgradeneeded = () => {
+                            const d = req.result;
+                            if (!d.objectStoreNames.contains(this.storeName)) {
+                                d.createObjectStore(this.storeName);
+                            }
+                        };
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => resolve(null);
+                    } catch (e) {
+                        resolve(null);
+                    }
+                });
+            },
+            async get(key) {
+                const d = await this.open();
+                if (d) {
+                    const res = await new Promise((resolve) => {
+                        try {
+                            const tx = d.transaction(this.storeName, 'readonly');
+                            const req = tx.objectStore(this.storeName).get(key);
+                            req.onsuccess = () => resolve(req.result || null);
+                            req.onerror = () => resolve(null);
+                        } catch (e) {
+                            resolve(null);
+                        }
+                    });
+                    if (res !== null) return res;
+                }
+                try {
+                    const raw = localStorage.getItem('ws_os_' + key);
+                    return raw ? JSON.parse(raw) : null;
+                } catch (e) {
+                    return null;
+                }
+            },
+            async set(key, val) {
+                try {
+                    localStorage.setItem('ws_os_' + key, JSON.stringify(val));
+                } catch (e) {}
+                const d = await this.open();
+                if (!d) return;
+                return new Promise((resolve) => {
+                    try {
+                        const tx = d.transaction(this.storeName, 'readwrite');
+                        tx.objectStore(this.storeName).put(val, key);
+                        tx.oncomplete = () => resolve(true);
+                        tx.onerror = () => resolve(false);
+                    } catch (e) {
+                        resolve(false);
+                    }
+                });
+            },
+            async remove(key) {
+                try {
+                    localStorage.removeItem('ws_os_' + key);
+                } catch (e) {}
+                const d = await this.open();
+                if (!d) return;
+                return new Promise((resolve) => {
+                    try {
+                        const tx = d.transaction(this.storeName, 'readwrite');
+                        tx.objectStore(this.storeName).delete(key);
+                        tx.oncomplete = () => resolve(true);
+                        tx.onerror = () => resolve(false);
+                    } catch (e) {
+                        resolve(false);
+                    }
+                });
+            }
+        };
+
+        function sanitizeKey(username) {
+            return username.toLowerCase().trim().replace(/[^a-z0-9_-]/g, '_');
+        }
+
+        async function saveCurrentUserAccount() {
+            if (!currentUser) return;
+            const badgeText = document.getElementById('saveStatusText');
+            if (badgeText) badgeText.textContent = "Saving...";
+
+            const key = sanitizeKey(currentUser.username);
+            const copy = JSON.parse(JSON.stringify(currentUser));
+            await OfflineDB.set('account_' + key, copy);
+
+            const rememberEl = document.getElementById('authRememberMe');
+            if (!rememberEl || rememberEl.checked) {
+                await OfflineDB.set('active_session_user', copy);
+            }
+
+            setTimeout(() => {
+                if (badgeText) badgeText.textContent = "All Data Saved ✓";
+            }, 250);
+        }
+
+        // --- 4. SOUND & MALE VOICE ENGINE (BANGLA + ENGLISH) ---
+        let audioCtx = null;
+        function playTone(type = 'click') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'alarm') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.setValueAtTime(360, now + 0.18);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                } else if (type === 'done') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, now);
+                    osc.frequency.setValueAtTime(880, now + 0.12);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(660, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch (e) {}
+        }
+
+        let availableVoices = [];
+        function populateSystemVoices() {
+            if (!('speechSynthesis' in window)) return;
+            availableVoices = window.speechSynthesis.getVoices() || [];
+            const select = document.getElementById('selectSystemVoice');
+            if (!select) return;
+
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">Auto-Match Bangla / English Male Voice</option>';
+            availableVoices.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.voiceURI;
+                opt.textContent = `${v.name} (${v.lang})`;
+                select.appendChild(opt);
+            });
+            if (currentUser && currentUser.selectedVoiceURI) {
+                select.value = currentUser.selectedVoiceURI;
+            } else if (currentVal) {
+                select.value = currentVal;
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            populateSystemVoices();
+            window.speechSynthesis.onvoiceschanged = populateSystemVoices;
+        }
+
+        function speakWithMaleVoice(text) {
+            if (!('speechSynthesis' in window) || !text) return;
+            try {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+
+                const hasBanglaChars = /[\u0980-\u09FF]/.test(text);
+                const targetLang = hasBanglaChars ? 'bn' : (currentUser?.voiceLang || 'en');
+
+                const voices = window.speechSynthesis.getVoices() || [];
+                let chosen = null;
+
+                if (currentUser?.selectedVoiceURI) {
+                    chosen = voices.find(v => v.voiceURI === currentUser.selectedVoiceURI);
+                }
+
+                if (!chosen) {
+                    const langVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(targetLang));
+                    chosen = langVoices.find(v => /male|পুরুষ|prabhat|sagar|bashkar|david|mark|daniel|guy|alex/i.test(v.name)) || langVoices[0];
+                }
+
+                if (chosen) {
+                    utter.voice = chosen;
+                    utter.lang = chosen.lang;
+                } else {
+                    utter.lang = hasBanglaChars ? 'bn-BD' : 'en-US';
+                }
+
+                utter.pitch = currentUser ? parseFloat(currentUser.voicePitch || 0.80) : 0.80;
+                utter.rate = currentUser ? parseFloat(currentUser.voiceSpeed || 0.95) : 0.95;
+
+                window.speechSynthesis.speak(utter);
+            } catch (e) {
+                console.warn("TTS error:", e);
+            }
+        }
+
+        // --- 5. DOWNLOAD (.HTML) & BACKUP (.JSON) FUNCTIONS ---
+        function downloadStandaloneAppHtml() {
+            try {
+                const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+                const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "Workstation-OS-App.html";
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 250);
+                playTone('done');
+                notify("Workstation-OS-App.html Downloaded!");
+            } catch (e) {
+                notify("Download failed. Use browser Save Page option.");
+            }
+        }
+
+        function exportUserProgressJson() {
+            if (!currentUser) {
+                notify("Please log in first to download your backup.");
+                return;
+            }
+            const dataStr = JSON.stringify(currentUser, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const dateTag = new Date().toISOString().slice(0, 10);
+            a.download = `Workstation-${currentUser.username}-${dateTag}.json`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 250);
+            playTone('done');
+            notify("Backup (.json) Downloaded!");
+        }
+
+        function handleImportJsonFile(file, callback) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!imported || !imported.username || !Array.isArray(imported.tasks)) {
+                        notify("Invalid backup file.");
+                        return;
+                    }
+                    currentUser = imported;
+                    await saveCurrentUserAccount();
+                    if (callback) callback(imported);
+                    playTone('done');
+                    notify(`Restored data for ${imported.displayName || imported.username}!`);
+                } catch (err) {
+                    notify("Failed to read backup file.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- 6. UI RENDERING & ANALYTICS CHART ---
+        let analyticsChart = null;
+
+        function notify(msg) {
+            const toast = document.getElementById('toastNotification');
+            const text = document.getElementById('toastText');
+            if (!toast || !text) return;
+            text.textContent = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 2600);
+        }
+
+        function computeDailyScore() {
+            if (!currentUser || !currentUser.tasks.length) return 0;
+            const doneCount = currentUser.tasks.filter(t => t.done).length;
+            return Math.round((doneCount / currentUser.tasks.length) * 100);
+        }
+
+        function refreshWorkspaceUI() {
+            if (!currentUser) return;
+
+            document.getElementById('headerUserName').textContent = currentUser.displayName || currentUser.username;
+            document.getElementById('userAvatarInitial').textContent = (currentUser.displayName || currentUser.username).charAt(0).toUpperCase();
+            document.getElementById('analyticsUserLabel').textContent = `${currentUser.displayName}'s Workspace`;
+
+            const score = computeDailyScore();
+            const doneCount = currentUser.tasks.filter(t => t.done).length;
+            const totalCount = currentUser.tasks.length;
+
+            document.getElementById('kpiScore').textContent = `${score}%`;
+            document.getElementById('kpiTasksCount').textContent = `${doneCount}/${totalCount}`;
+            document.getElementById('kpiProgressBar').style.width = `${score}%`;
+            document.getElementById('kpiFocusMins').textContent = `${currentUser.focusMinutesToday || 0}m`;
+            document.getElementById('kpiBreaches').textContent = `${currentUser.breachesToday || 0}`;
+            document.getElementById('kpiStreak').textContent = `${currentUser.streak || 1} Day`;
+            document.getElementById('checklistFraction').textContent = `${doneCount} / ${totalCount} Done`;
+
+            // Update Today in 7-Day History
+            if (Array.isArray(currentUser.history7Days) && currentUser.history7Days.length > 0) {
+                const lastIdx = currentUser.history7Days.length - 1;
+                currentUser.history7Days[lastIdx] = {
+                    day: "Today",
+                    score: score,
+                    mins: currentUser.focusMinutesToday || 0,
+                    breaches: currentUser.breachesToday || 0
+                };
+            }
+
+            // Mission input
+            const missionInput = document.getElementById('inputDailyMission');
+            const lockLabel = document.getElementById('lockMissionLabel');
+            const lockStatus = document.getElementById('planLockStatus');
+            missionInput.value = currentUser.dailyMission || "";
+            missionInput.disabled = !!currentUser.missionLocked;
+            if (currentUser.missionLocked) {
+                lockLabel.textContent = "Unlock";
+                lockStatus.textContent = "Locked In 🔒";
+                lockStatus.className = "text-[11px] font-mono-code text-emerald-400";
+            } else {
+                lockLabel.textContent = "Lock Plan";
+                lockStatus.textContent = "Editable";
+                lockStatus.className = "text-[11px] font-mono-code text-zinc-400";
+            }
+
+            // Force Mode toggle
+            document.getElementById('toggleForceMode').checked = currentUser.forceMode !== false;
+
+            // Render Checklist
+            const container = document.getElementById('taskListContainer');
+            container.innerHTML = '';
+            currentUser.tasks.forEach(task => {
+                const row = document.createElement('div');
+                row.className = `flex items-center justify-between gap-3 p-3 rounded-xl border transition ${
+                    task.done ? 'bg-zinc-900/40 border-zinc-800/60 text-zinc-500' : 'bg-zinc-900/90 border-zinc-800 text-zinc-100'
+                }`;
+
+                const left = document.createElement('label');
+                left.className = "flex items-center gap-3 flex-1 cursor-pointer select-none";
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = !!task.done;
+                cb.className = "w-4 h-4 accent-emerald-500 rounded cursor-pointer";
+                cb.addEventListener('change', async () => {
+                    task.done = cb.checked;
+                    playTone(task.done ? 'done' : 'click');
+                    refreshWorkspaceUI();
+                    await saveCurrentUserAccount();
+                });
+
+                const span = document.createElement('span');
+                span.className = `text-xs sm:text-sm font-bangla ${task.done ? 'line-through text-zinc-500' : ''}`;
+                span.textContent = task.text;
+
+                left.appendChild(cb);
+                left.appendChild(span);
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = "p-1 text-zinc-500 hover:text-rose-400 transition";
+                delBtn.innerHTML = '<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>';
+                delBtn.addEventListener('click', async () => {
+                    currentUser.tasks = currentUser.tasks.filter(t => t.id !== task.id);
+                    refreshWorkspaceUI();
+                    await saveCurrentUserAccount();
+                });
+
+                row.appendChild(left);
+                row.appendChild(delBtn);
+                container.appendChild(row);
+            });
+
+            // Voice Studio inputs
+            document.getElementById('inputVoiceWarning').value = currentUser.voiceWarning || "";
+            document.getElementById('inputVoiceMotivation').value = currentUser.voiceMotivation || "";
+            document.getElementById('sliderVoicePitch').value = currentUser.voicePitch || 0.80;
+            document.getElementById('labelPitchVal').textContent = Number(currentUser.voicePitch || 0.80).toFixed(2);
+            document.getElementById('sliderVoiceSpeed').value = currentUser.voiceSpeed || 0.95;
+            document.getElementById('labelRateVal').textContent = `${Number(currentUser.voiceSpeed || 0.95).toFixed(2)}x`;
+
+            // Breach Logs
+            const logBox = document.getElementById('breachLogList');
+            if (logBox) {
+                if (!currentUser.breachLogs || currentUser.breachLogs.length === 0) {
+                    logBox.innerHTML = '<p class="text-zinc-500">Zero distractions recorded today. Keep it up!</p>';
+                } else {
+                    logBox.innerHTML = currentUser.breachLogs.slice().reverse().map(item =>
+                        `<div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-900 border border-zinc-800">
+                            <span class="text-rose-300 font-medium">${item.reason}</span>
+                            <span class="font-mono-code text-[11px] text-zinc-500">${item.time}</span>
+                        </div>`
+                    ).join('');
+                }
+            }
+
+            if (window.lucide) window.lucide.createIcons();
+            renderAnalyticsChart();
+        }
+
+        function renderAnalyticsChart() {
+            const canvas = document.getElementById('analyticsChartCanvas');
+            if (!canvas || !currentUser) return;
+            const ctx = canvas.getContext('2d');
+            const history = currentUser.history7Days || [];
+
+            const labels = history.map(h => h.day);
+            const scores = history.map(h => h.score);
+            const mins = history.map(h => h.mins);
+
+            if (analyticsChart) {
+                analyticsChart.data.labels = labels;
+                analyticsChart.data.datasets[0].data = scores;
+                analyticsChart.data.datasets[1].data = mins;
+                analyticsChart.update();
+                return;
+            }
+
+            analyticsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Daily Completion %',
+                            data: scores,
+                            backgroundColor: 'rgba(16, 185, 129, 0.75)',
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Focused Minutes',
+                            data: mins,
+                            backgroundColor: 'rgba(99, 102, 241, 0.75)',
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#d4d4d8', font: { size: 11 } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#a1a1aa' },
+                            grid: { color: 'rgba(63, 63, 70, 0.25)' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#a1a1aa' },
+                            grid: { color: 'rgba(63, 63, 70, 0.25)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 7. DEEP WORK TIMER & FORCE-FOCUS BREACH INTERCEPTOR ---
+        let timerSeconds = 25 * 60;
+        let selectedDurationMins = 25;
+        let timerInterval = null;
+        let isRunning = false;
+
+        function formatClock(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function setTimerDuration(mins) {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+            }
+            selectedDurationMins = mins;
+            timerSeconds = mins * 60;
+            document.getElementById('timerDisplay').textContent = formatClock(timerSeconds);
+            document.getElementById('startTimerLabel').textContent = "Start Focus Session";
+            document.getElementById('timerStatusBadge').textContent = "Ready to Focus";
+            document.getElementById('timerStatusBadge').className = "px-2.5 py-0.5 text-[10px] font-mono-code uppercase tracking-widest rounded-full bg-zinc-800 text-zinc-300";
+        }
+
+        function toggleFocusTimer() {
+            const label = document.getElementById('startTimerLabel');
+            const badge = document.getElementById('timerStatusBadge');
+
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                label.textContent = "Resume Focus";
+                badge.textContent = "Paused";
+                badge.className = "px-2.5 py-0.5 text-[10px] font-mono-code uppercase tracking-widest rounded-full bg-amber-500/20 text-amber-300";
+                return;
+            }
+
+            isRunning = true;
+            playTone('click');
+            label.textContent = "Pause Session";
+            badge.textContent = "Locked In • Guard Active";
+            badge.className = "px-2.5 py-0.5 text-[10px] font-mono-code uppercase tracking-widest rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+
+            timerInterval = setInterval(async () => {
+                if (timerSeconds > 0) {
+                    timerSeconds--;
+                    document.getElementById('timerDisplay').textContent = formatClock(timerSeconds);
+                    if (timerSeconds % 60 === 0 && currentUser) {
+                        currentUser.focusMinutesToday = (currentUser.focusMinutesToday || 0) + 1;
+                        refreshWorkspaceUI();
+                        await saveCurrentUserAccount();
+                    }
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    playTone('done');
+                    if (currentUser) {
+                        speakWithMaleVoice(currentUser.voiceMotivation);
+                    }
+                    notify("Focus Session Complete!");
+                    setTimerDuration(selectedDurationMins);
+                }
+            }, 1000);
+        }
+
+        async function triggerBreachInterception(reason = "App / Tab Switch Detected") {
+            if (!currentUser) return;
+            playTone('alarm');
+            currentUser.breachesToday = (currentUser.breachesToday || 0) + 1;
+            currentUser.breachLogs = currentUser.breachLogs || [];
+            currentUser.breachLogs.push({
+                reason: reason,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+            });
+
+            document.getElementById('breachTitleText').textContent = currentUser.voiceWarning;
+            document.getElementById('breachMissionReminder').textContent = currentUser.dailyMission || "Complete Today's Plan";
+
+            const overlay = document.getElementById('breachOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            speakWithMaleVoice(currentUser.voiceWarning);
+            refreshWorkspaceUI();
+            await saveCurrentUserAccount();
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isRunning && currentUser && currentUser.forceMode !== false) {
+                triggerBreachInterception("Left Workstation during active Focus Session");
+            }
+        });
+
+        // --- 8. INITIALIZATION & EVENT LISTENERS ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (window.lucide) window.lucide.createIcons();
+
+            document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('en-US', {
+                weekday: 'short', month: 'short', day: 'numeric'
+            });
+
+            // Auth Mode Switch
+            const tabLogin = document.getElementById('tabBtnLogin');
+            const tabRegister = document.getElementById('tabBtnRegister');
+            const displayGroup = document.getElementById('displayNameGroup');
+            const submitLabel = document.getElementById('authSubmitLabel');
+
+            tabLogin.addEventListener('click', () => {
+                authMode = 'login';
+                tabLogin.className = "py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-white transition";
+                tabRegister.className = "py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white transition";
+                displayGroup.classList.add('hidden');
+                submitLabel.textContent = "Open My Workspace";
+            });
+
+            tabRegister.addEventListener('click', () => {
+                authMode = 'register';
+                tabRegister.className = "py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-white transition";
+                tabLogin.className = "py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white transition";
+                displayGroup.classList.remove('hidden');
+                submitLabel.textContent = "Create & Save Account";
+            });
+
+            // Auth Language Buttons
+            const btnLangBn = document.getElementById('authLangBn');
+            const btnLangEn = document.getElementById('authLangEn');
+            btnLangBn.addEventListener('click', () => {
+                selectedAuthLang = 'bn';
+                btnLangBn.className = "py-2.5 px-3 rounded-xl border border-indigo-500/60 bg-indigo-500/15 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition";
+                btnLangEn.className = "py-2.5 px-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 text-xs font-semibold flex items-center justify-center gap-1.5 transition";
+            });
+            btnLangEn.addEventListener('click', () => {
+                selectedAuthLang = 'en';
+                btnLangEn.className = "py-2.5 px-3 rounded-xl border border-indigo-500/60 bg-indigo-500/15 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition";
+                btnLangBn.className = "py-2.5 px-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 text-xs font-semibold flex items-center justify-center gap-1.5 transition";
+            });
+
+            async function enterWorkspaceWithAccount(account) {
+                currentUser = account;
+                await saveCurrentUserAccount();
+                document.getElementById('authScreen').classList.add('hidden');
+                refreshWorkspaceUI();
+                notify(`Welcome, ${currentUser.displayName}!`);
+            }
+
+            // Submit Login / Register
+            document.getElementById('authForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('authUsername').value.trim();
+                const displayName = document.getElementById('authDisplayName').value.trim();
+                const pin = document.getElementById('authPin').value.trim();
+                const errBox = document.getElementById('authErrorMsg');
+                errBox.classList.add('hidden');
+
+                if (!username || !pin) return;
+                const key = sanitizeKey(username);
+                const existing = await OfflineDB.get('account_' + key);
+
+                if (authMode === 'register') {
+                    const newAcc = createDefaultUserData(username, displayName || username, pin, selectedAuthLang);
+                    await enterWorkspaceWithAccount(newAcc);
+                } else {
+                    if (existing) {
+                        if (existing.pin !== pin) {
+                            errBox.textContent = "Incorrect PIN for this username. Try again or create a new account.";
+                            errBox.classList.remove('hidden');
+                            return;
+                        }
+                        await enterWorkspaceWithAccount(existing);
+                    } else {
+                        const freshAcc = createDefaultUserData(username, username, pin, selectedAuthLang);
+                        await enterWorkspaceWithAccount(freshAcc);
+                    }
+                }
+            });
+
+            // Quick Demo Login
+            document.getElementById('btnQuickGuest').addEventListener('click', async () => {
+                const demoAcc = createDefaultUserData("commander", "Commander", "1234", selectedAuthLang);
+                await enterWorkspaceWithAccount(demoAcc);
+            });
+
+            // Logout
+            document.getElementById('btnLogout').addEventListener('click', async () => {
+                if (isRunning) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                }
+                await OfflineDB.remove('active_session_user');
+                document.getElementById('authPin').value = '';
+                document.getElementById('authScreen').classList.remove('hidden');
+                notify("Logged out safely. Your data is saved.");
+            });
+
+            // Auto-Restore Saved Account on Page Load
+            const savedSession = await OfflineDB.get('active_session_user');
+            if (savedSession && savedSession.username) {
+                const latest = await OfflineDB.get('account_' + sanitizeKey(savedSession.username));
+                currentUser = latest || savedSession;
+                document.getElementById('authScreen').classList.add('hidden');
+                refreshWorkspaceUI();
+            }
+
+            // Tab Navigation
+            document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('data-tab');
+                    document.getElementById('viewWorkspace').classList.toggle('hidden', target !== 'workspace');
+                    document.getElementById('viewVoice').classList.toggle('hidden', target !== 'voice');
+                    document.getElementById('viewAnalytics').classList.toggle('hidden', target !== 'analytics');
+
+                    document.querySelectorAll('.nav-tab-btn').forEach(b => {
+                        const isMatch = b.getAttribute('data-tab') === target;
+                        if (b.parentElement.classList.contains('md:hidden')) {
+                            b.className = `nav-tab-btn flex flex-col items-center gap-1 py-1 px-4 rounded-xl font-semibold text-[11px] ${isMatch ? 'text-white' : 'text-zinc-400'}`;
+                        } else {
+                            b.className = `nav-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${isMatch ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white'}`;
+                        }
+                    });
+
+                    if (target === 'analytics') renderAnalyticsChart();
+                });
+            });
+
+            // Quotes & Motivation Voice
+            let quoteIdx = 0;
+            document.getElementById('btnNextQuote').addEventListener('click', () => {
+                quoteIdx = (quoteIdx + 1) % QUOTES.length;
+                document.getElementById('quoteBannerText').textContent = QUOTES[quoteIdx];
+            });
+
+            const speakMotivationNow = () => {
+                const msg = currentUser ? currentUser.voiceMotivation : PRESETS.bn_strict.motivation;
+                speakWithMaleVoice(msg);
+                notify("Speaking Motivation (পুরুষ কণ্ঠ)...");
+            };
+            document.getElementById('btnBannerSpeakMotivation').addEventListener('click', speakMotivationNow);
+            document.getElementById('btnQuickVoiceMotivate').addEventListener('click', speakMotivationNow);
+
+            // Timer Presets & Controls
+            document.querySelectorAll('.preset-time-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setTimerDuration(parseInt(btn.getAttribute('data-mins'), 10));
+                });
+            });
+
+            document.getElementById('inputCustomMins').addEventListener('change', (e) => {
+                const val = parseInt(e.target.value, 10);
+                if (val && val > 0 && val <= 300) {
+                    setTimerDuration(val);
+                    notify(`Custom ${val}m timer set`);
+                }
+            });
+
+            document.getElementById('btnStartTimer').addEventListener('click', toggleFocusTimer);
+            document.getElementById('btnResetTimer').addEventListener('click', () => setTimerDuration(selectedDurationMins));
+
+            document.getElementById('toggleForceMode').addEventListener('change', async (e) => {
+                if (!currentUser) return;
+                currentUser.forceMode = e.target.checked;
+                await saveCurrentUserAccount();
+                notify(currentUser.forceMode ? "Force Mode Enabled" : "Force Mode Paused");
+            });
+
+            // Simulate / Test Breach Alarm
+            document.getElementById('btnSimulateBreach').addEventListener('click', () => {
+                triggerBreachInterception("Manual Alarm Test");
+            });
+            document.getElementById('btnRepeatBreachVoice').addEventListener('click', () => {
+                if (currentUser) speakWithMaleVoice(currentUser.voiceWarning);
+            });
+            document.getElementById('btnReturnToWork').addEventListener('click', () => {
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                const overlay = document.getElementById('breachOverlay');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            });
+
+            // Lock Daily Plan
+            document.getElementById('btnLockMission').addEventListener('click', async () => {
+                if (!currentUser) return;
+                const val = document.getElementById('inputDailyMission').value.trim();
+                if (!val) return;
+                currentUser.dailyMission = val;
+                currentUser.missionLocked = !currentUser.missionLocked;
+                playTone('done');
+                refreshWorkspaceUI();
+                await saveCurrentUserAccount();
+                notify(currentUser.missionLocked ? "Today's #1 Plan Locked In!" : "Plan Unlocked for Editing");
+            });
+
+            // Add New Checklist Task
+            document.getElementById('formAddTask').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentUser) return;
+                const input = document.getElementById('inputNewTask');
+                const text = input.value.trim();
+                if (!text) return;
+                currentUser.tasks.push({ id: Date.now(), text: text, done: false });
+                input.value = '';
+                playTone('click');
+                refreshWorkspaceUI();
+                await saveCurrentUserAccount();
+            });
+
+            // Voice Studio Presets & Controls
+            document.querySelectorAll('.voice-preset-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!currentUser) return;
+                    const key = btn.getAttribute('data-preset');
+                    const preset = PRESETS[key];
+                    if (!preset) return;
+                    currentUser.voiceLang = preset.lang;
+                    currentUser.voiceWarning = preset.warning;
+                    currentUser.voiceMotivation = preset.motivation;
+                    refreshWorkspaceUI();
+                    speakWithMaleVoice(preset.warning);
+                    await saveCurrentUserAccount();
+                    notify("Loaded Voice Preset!");
+                });
+            });
+
+            document.getElementById('sliderVoicePitch').addEventListener('input', (e) => {
+                document.getElementById('labelPitchVal').textContent = Number(e.target.value).toFixed(2);
+            });
+            document.getElementById('sliderVoiceSpeed').addEventListener('input', (e) => {
+                document.getElementById('labelRateVal').textContent = `${Number(e.target.value).toFixed(2)}x`;
+            });
+
+            document.getElementById('btnSaveVoiceConfig').addEventListener('click', async () => {
+                if (!currentUser) return;
+                currentUser.voiceWarning = document.getElementById('inputVoiceWarning').value.trim() || currentUser.voiceWarning;
+                currentUser.voiceMotivation = document.getElementById('inputVoiceMotivation').value.trim() || currentUser.voiceMotivation;
+                currentUser.voicePitch = parseFloat(document.getElementById('sliderVoicePitch').value);
+                currentUser.voiceSpeed = parseFloat(document.getElementById('sliderVoiceSpeed').value);
+                currentUser.selectedVoiceURI = document.getElementById('selectSystemVoice').value;
+                await saveCurrentUserAccount();
+                playTone('done');
+                notify("Voice Settings Saved!");
+            });
+
+            document.getElementById('btnPreviewVoiceAlert').addEventListener('click', () => {
+                if (!currentUser) return;
+                currentUser.voiceWarning = document.getElementById('inputVoiceWarning').value.trim() || currentUser.voiceWarning;
+                currentUser.voicePitch = parseFloat(document.getElementById('sliderVoicePitch').value);
+                currentUser.voiceSpeed = parseFloat(document.getElementById('sliderVoiceSpeed').value);
+                speakWithMaleVoice(currentUser.voiceWarning);
+            });
+
+            document.getElementById('btnTestMotivationVoiceStudio').addEventListener('click', () => {
+                if (!currentUser) return;
+                currentUser.voiceMotivation = document.getElementById('inputVoiceMotivation').value.trim() || currentUser.voiceMotivation;
+                currentUser.voicePitch = parseFloat(document.getElementById('sliderVoicePitch').value);
+                currentUser.voiceSpeed = parseFloat(document.getElementById('sliderVoiceSpeed').value);
+                speakWithMaleVoice(currentUser.voiceMotivation);
+            });
+
+            // Archive Day & Advance Streak
+            document.getElementById('btnCompleteDay').addEventListener('click', async () => {
+                if (!currentUser) return;
+                const score = computeDailyScore();
+                currentUser.history7Days.push({
+                    day: `Day ${currentUser.history7Days.length + 1}`,
+                    score: score,
+                    mins: currentUser.focusMinutesToday || 0,
+                    breaches: currentUser.breachesToday || 0
+                });
+                if (currentUser.history7Days.length > 7) currentUser.history7Days.shift();
+                currentUser.streak = (currentUser.streak || 1) + 1;
+                currentUser.focusMinutesToday = 0;
+                currentUser.breachesToday = 0;
+                currentUser.tasks.forEach(t => t.done = false);
+                playTone('done');
+                refreshWorkspaceUI();
+                await saveCurrentUserAccount();
+                notify(`Day Archived! Streak is now ${currentUser.streak} Days 🔥`);
+            });
+
+            document.getElementById('btnClearBreachLogs').addEventListener('click', async () => {
+                if (!currentUser) return;
+                currentUser.breachLogs = [];
+                refreshWorkspaceUI();
+                await saveCurrentUserAccount();
+            });
+
+            // Download & Backup Modal
+            const infoModal = document.getElementById('infoModal');
+            const openModal = () => {
+                infoModal.classList.remove('hidden');
+                infoModal.classList.add('flex');
+            };
+            const closeModal = () => {
+                infoModal.classList.add('hidden');
+                infoModal.classList.remove('flex');
+            };
+
+            document.getElementById('btnOpenInfoModal').addEventListener('click', openModal);
+            document.getElementById('btnAuthScreenDownload').addEventListener('click', openModal);
+            document.getElementById('btnCloseInfoModal').addEventListener('click', closeModal);
+            document.getElementById('btnGotItModal').addEventListener('click', closeModal);
+
+            document.getElementById('btnDownloadStandaloneHtml').addEventListener('click', downloadStandaloneAppHtml);
+            document.getElementById('btnExportDataJson').addEventListener('click', exportUserProgressJson);
+            document.getElementById('btnAnalyticsBackup').addEventListener('click', exportUserProgressJson);
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredInstallPrompt = e;
+            });
+
+            document.getElementById('btnTriggerPwaInstall').addEventListener('click', async () => {
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    await deferredInstallPrompt.userChoice;
+                    deferredInstallPrompt = null;
+                } else {
+                    document.getElementById('pwaInstallHint').classList.remove('hidden');
+                }
+            });
+
+            const fileInput = document.getElementById('inputImportJsonFile');
+            document.getElementById('btnTriggerImportJson').addEventListener('click', () => fileInput.click());
+            document.getElementById('btnAuthRestoreBackup').addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                handleImportJsonFile(file, (restored) => {
+                    closeModal();
+                    enterWorkspaceWithAccount(restored);
+                });
+                fileInput.value = '';
+            });
+        });
+    </script>
+</body>
+</html>
